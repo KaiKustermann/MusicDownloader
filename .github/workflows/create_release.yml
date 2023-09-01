@@ -64,4 +64,4 @@ jobs:
           gh release create "${{ github.ref_name }}"
           "YoutubeDownloader.zip"
           --repo "${{ github.event.repository.full_name }}"
-          --title "${{ github.ref_name }}"
+          --title "Release v${{ github.run_number }}"
