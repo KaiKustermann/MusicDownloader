@@ -65,5 +65,3 @@ jobs:
           "YoutubeDownloader.zip"
           --repo "${{ github.event.repository.full_name }}"
           --title "${{ github.ref_name }}"
-          --notes "[Changelog](${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md)"
-          --verify-tag
