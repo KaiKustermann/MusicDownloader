@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0 (01-Sep-2023)
+## v2.0.! (01-Sep-2023)
 
 - First version of music downloader.
 
