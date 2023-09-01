@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.0 (01-Sep-2023)
+
+- First version of music downloader.
+
 ## v1.10.3 (31-Aug-2023)
 
 - Fixed various YouTube-related issues. Updated to YoutubeExplode v6.3.3.
