@@ -1,6 +1,6 @@
-name: main
+name: create_release
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   pack:
@@ -68,23 +68,3 @@ jobs:
           --title "${{ github.ref_name }}"
           --notes "[Changelog](${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md)"
           --verify-tag
-
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Notify Discord
-        uses: tyrrrz/action-http-request@v1
-        with:
-          url: ${{ secrets.DISCORD_WEBHOOK }}
-          method: POST
-          headers: |
-            Content-Type: application/json; charset=UTF-8
-          body: |
-            {
-              "avatar_url": "https://raw.githubusercontent.com/${{ github.event.repository.full_name }}/${{ github.ref_name }}/favicon.png",
-              "content": "**${{ github.event.repository.name }}** new version released!\nVersion: `${{ github.ref_name }}`\nChangelog: <${{ github.event.repository.html_url }}/blob/${{ github.ref_name }}/Changelog.md>"
-            }
