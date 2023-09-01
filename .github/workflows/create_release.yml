@@ -36,6 +36,7 @@ jobs:
           path: YoutubeDownloader/bin/publish
 
   deploy:
+    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
     needs: pack
     runs-on: ubuntu-latest
     permissions:
