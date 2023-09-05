@@ -62,9 +62,13 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
 
     public void Confirm()
     {
-        var dirPath = _dialogManager.PromptDirectoryPath();
-        if (string.IsNullOrWhiteSpace(dirPath))
-            return;
+        if (_settingsService.LastSavingDirectory == null || string.IsNullOrWhiteSpace(_settingsService.LastSavingDirectory))
+        {
+            var dirPath = _dialogManager.PromptDirectoryPath();
+            if (string.IsNullOrWhiteSpace(dirPath))
+                return;
+            _settingsService.LastSavingDirectory = dirPath;
+        }
 
         var downloads = new List<DownloadViewModel>();
         for (var i = 0; i < SelectedVideos!.Count; i++)
@@ -72,7 +76,7 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             var video = SelectedVideos[i];
 
             var baseFilePath = Path.Combine(
-                dirPath,
+                _settingsService.LastSavingDirectory,
                 FileNameTemplate.Apply(
                     _settingsService.FileNameTemplate,
                     video,

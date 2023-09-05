@@ -51,7 +51,7 @@
                         Grid.Column="1"
                         Margin="0,6,6,8"
                         VerticalAlignment="Bottom"
-                        materialDesign:HintAssist.Hint="URL or search query"
+                        materialDesign:HintAssist.Hint="Hier URL des Videos einfügen"
                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                         AcceptsReturn="True"
                         BorderThickness="0"
@@ -124,15 +124,7 @@
                     FontWeight="Light"
                     TextAlignment="Center"
                     TextWrapping="Wrap">
-                    <Run Text="Copy-paste a" />
-                    <Run FontWeight="SemiBold" Text="URL" />
-                    <Run Text="or enter a" />
-                    <Run FontWeight="SemiBold" Text="search query" />
-                    <Run Text="to start downloading" />
-                    <LineBreak />
-                    <Run Text="Press" />
-                    <Run FontWeight="SemiBold" Text="Shift+Enter" />
-                    <Run Text="to add multiple items" />
+                    <Run Text="URL des YouTube Videos in der Leiste oben einfügen und auf den Pfeil klicken, um das Lied herunterzuladen." />
                 </TextBlock>
             </StackPanel>
 

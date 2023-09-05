@@ -42,6 +42,8 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
 
+    public string? LastSavingDirectory { get; set; }
+
     public SettingsService()
         : base(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"))
     {

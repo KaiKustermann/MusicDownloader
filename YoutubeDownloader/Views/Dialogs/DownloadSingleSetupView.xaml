@@ -138,7 +138,7 @@
                 <Button
                     Margin="8,0,0,0"
                     Command="{s:Action Close}"
-                    Content="CANCEL"
+                    Content="ABBRECHEN"
                     IsCancel="True"
                     Style="{DynamicResource MaterialDesignOutlinedButton}" />
             </StackPanel>

@@ -47,17 +47,23 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
     {
         var container = SelectedDownloadOption!.Container;
 
-        var filePath = _dialogManager.PromptSaveFilePath(
-            $"{container.Name} file|*.{container.Name}",
-            FileNameTemplate.Apply(
-                _settingsService.FileNameTemplate,
-                Video!,
-                container
-            )
-        );
+        if (_settingsService.LastSavingDirectory == null || string.IsNullOrWhiteSpace(_settingsService.LastSavingDirectory))
+        {
+            var dirPath = _dialogManager.PromptDirectoryPath();
+            if (string.IsNullOrWhiteSpace(dirPath))
+                return;
+            _settingsService.LastSavingDirectory = dirPath;
+        }
 
-        if (string.IsNullOrWhiteSpace(filePath))
-            return;
+        var baseFilePath = Path.Combine(
+                _settingsService.LastSavingDirectory,
+                FileNameTemplate.Apply(
+                    _settingsService.FileNameTemplate,
+                    Video!,
+                    container)
+            );
+
+        var filePath = PathEx.EnsureUniquePath(baseFilePath);
 
         // Download does not start immediately, so lock in the file path to avoid conflicts
         DirectoryEx.CreateDirectoryForFile(filePath);
@@ -68,6 +74,7 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
         Close(
             _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
         );
+
     }
 }
 

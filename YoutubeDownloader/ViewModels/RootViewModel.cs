@@ -90,7 +90,6 @@ public class RootViewModel : Screen
 
     public async void OnViewFullyLoaded()
     {
-        await ShowUkraineSupportMessageAsync();
         await CheckForUpdatesAsync();
     }
 
