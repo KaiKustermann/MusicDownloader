@@ -20,100 +20,107 @@ public partial record VideoDownloadOption(
 
 public partial record VideoDownloadOption
 {
-    internal static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
-    {
-        IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions()
-        {
-            var videoStreamInfos = manifest
-                .GetVideoStreams()
-                .OrderByDescending(v => v.VideoQuality);
 
-            foreach (var videoStreamInfo in videoStreamInfos)
+    internal static IEnumerable<VideoDownloadOption> GetVideoAndAudioOptions(StreamManifest manifest)
+    {
+        var videoStreamInfos = manifest
+            .GetVideoStreams()
+            .OrderByDescending(v => v.VideoQuality);
+
+        foreach (var videoStreamInfo in videoStreamInfos)
+        {
+            // Muxed stream
+            if (videoStreamInfo is MuxedStreamInfo)
             {
-                // Muxed stream
-                if (videoStreamInfo is MuxedStreamInfo)
+                yield return new VideoDownloadOption(
+                    videoStreamInfo.Container,
+                    false,
+                    new[] { videoStreamInfo }
+                );
+            }
+            // Separate audio + video stream
+            else
+            {
+                // Prefer audio stream with the same container
+                var audioStreamInfo = manifest
+                    .GetAudioStreams()
+                    .OrderByDescending(s => s.Container == videoStreamInfo.Container)
+                    .ThenByDescending(s => s is AudioOnlyStreamInfo)
+                    .ThenByDescending(s => s.Bitrate)
+                    .FirstOrDefault();
+
+                if (audioStreamInfo is not null)
                 {
                     yield return new VideoDownloadOption(
                         videoStreamInfo.Container,
                         false,
-                        new[] { videoStreamInfo }
+                        new IStreamInfo[] { videoStreamInfo, audioStreamInfo }
                     );
-                }
-                // Separate audio + video stream
-                else
-                {
-                    // Prefer audio stream with the same container
-                    var audioStreamInfo = manifest
-                        .GetAudioStreams()
-                        .OrderByDescending(s => s.Container == videoStreamInfo.Container)
-                        .ThenByDescending(s => s is AudioOnlyStreamInfo)
-                        .ThenByDescending(s => s.Bitrate)
-                        .FirstOrDefault();
-
-                    if (audioStreamInfo is not null)
-                    {
-                        yield return new VideoDownloadOption(
-                            videoStreamInfo.Container,
-                            false,
-                            new IStreamInfo[] { videoStreamInfo, audioStreamInfo }
-                        );
-                    }
                 }
             }
         }
+    }
 
-        IEnumerable<VideoDownloadOption> GetAudioOnlyOptions()
+    internal static IReadOnlyList<VideoDownloadOption> GetAudioOnlyOptions(StreamManifest manifest)
+    {
+
+        var audioOnlyOptions = new List<VideoDownloadOption>();
+
+        // WebM-based audio-only containers
         {
-            // WebM-based audio-only containers
+            var audioStreamInfo = manifest
+                .GetAudioStreams()
+                .OrderByDescending(s => s.Container == Container.WebM)
+                .ThenByDescending(s => s is AudioOnlyStreamInfo)
+                .ThenByDescending(s => s.Bitrate)
+                .FirstOrDefault();
+
+            if (audioStreamInfo is not null)
             {
-                var audioStreamInfo = manifest
-                    .GetAudioStreams()
-                    .OrderByDescending(s => s.Container == Container.WebM)
-                    .ThenByDescending(s => s is AudioOnlyStreamInfo)
-                    .ThenByDescending(s => s.Bitrate)
-                    .FirstOrDefault();
+                audioOnlyOptions.Add(new VideoDownloadOption(
+                    Container.WebM,
+                    true,
+                    new[] { audioStreamInfo }
+                ));
 
-                if (audioStreamInfo is not null)
-                {
-                    yield return new VideoDownloadOption(
-                        Container.WebM,
-                        true,
-                        new[] { audioStreamInfo }
-                    );
+                audioOnlyOptions.Add(new VideoDownloadOption(
+                    Container.Mp3,
+                    true,
+                    new[] { audioStreamInfo }
+                ));
 
-                    yield return new VideoDownloadOption(
-                        Container.Mp3,
-                        true,
-                        new[] { audioStreamInfo }
-                    );
-
-                    yield return new VideoDownloadOption(
-                        new Container("ogg"),
-                        true,
-                        new[] { audioStreamInfo }
-                    );
-                }
-            }
-
-            // Mp4-based audio-only containers
-            {
-                var audioStreamInfo = manifest
-                    .GetAudioStreams()
-                    .OrderByDescending(s => s.Container == Container.Mp4)
-                    .ThenByDescending(s => s is AudioOnlyStreamInfo)
-                    .ThenByDescending(s => s.Bitrate)
-                    .FirstOrDefault();
-
-                if (audioStreamInfo is not null)
-                {
-                    yield return new VideoDownloadOption(
-                        Container.Mp4,
-                        true,
-                        new[] { audioStreamInfo }
-                    );
-                }
+                audioOnlyOptions.Add(new VideoDownloadOption(
+                    new Container("ogg"),
+                    true,
+                    new[] { audioStreamInfo }
+                ));
             }
         }
+
+        // Mp4-based audio-only containers
+        {
+            var audioStreamInfo = manifest
+                .GetAudioStreams()
+                .OrderByDescending(s => s.Container == Container.Mp4)
+                .ThenByDescending(s => s is AudioOnlyStreamInfo)
+                .ThenByDescending(s => s.Bitrate)
+                .FirstOrDefault();
+
+            if (audioStreamInfo is not null)
+            {
+                audioOnlyOptions.Add(new VideoDownloadOption(
+                    Container.Mp4,
+                    true,
+                    new[] { audioStreamInfo }
+                ));
+            }
+        }
+
+        return audioOnlyOptions.AsReadOnly();
+    }
+
+    internal static IReadOnlyList<VideoDownloadOption> ResolveAll(StreamManifest manifest)
+    {
 
         // Deduplicate download options by video quality and container
         var comparer = new DelegateEqualityComparer<VideoDownloadOption>(
@@ -123,8 +130,8 @@ public partial record VideoDownloadOption
 
         var options = new HashSet<VideoDownloadOption>(comparer);
 
-        options.AddRange(GetVideoAndAudioOptions());
-        options.AddRange(GetAudioOnlyOptions());
+        options.AddRange(GetVideoAndAudioOptions(manifest));
+        options.AddRange(GetAudioOnlyOptions(manifest));
 
         return options.ToArray();
     }

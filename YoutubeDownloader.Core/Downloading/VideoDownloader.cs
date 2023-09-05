@@ -28,6 +28,14 @@ public class VideoDownloader
         return VideoDownloadOption.ResolveAll(manifest);
     }
 
+    public async Task<IReadOnlyList<VideoDownloadOption>> GetAudioDownloadOptionsAsync(
+    VideoId videoId,
+    CancellationToken cancellationToken = default)
+    {
+        var manifest = await _youtube.Videos.Streams.GetManifestAsync(videoId, cancellationToken);
+        return VideoDownloadOption.GetAudioOnlyOptions(manifest);
+    }
+
     public async Task<VideoDownloadOption> GetBestDownloadOptionAsync(
         VideoId videoId,
         VideoDownloadPreference preference,

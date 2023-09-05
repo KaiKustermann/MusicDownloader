@@ -78,24 +78,6 @@
                 </Grid>
             </materialDesign:Card>
 
-            <!--  Auth button  -->
-            <Button
-                Grid.Column="1"
-                Margin="6"
-                Padding="4"
-                Command="{s:Action ShowAuthSetup}"
-                Foreground="{DynamicResource MaterialDesignDarkForeground}"
-                Style="{DynamicResource MaterialDesignFlatButton}"
-                ToolTip="Authentication">
-                <Button.Resources>
-                    <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
-                </Button.Resources>
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    Kind="AccountKey" />
-            </Button>
-
             <!--  Settings button  -->
             <Button
                 Grid.Column="2"

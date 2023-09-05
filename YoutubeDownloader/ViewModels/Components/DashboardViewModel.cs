@@ -182,7 +182,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
             if (result.Videos.Count == 1)
             {
                 var video = result.Videos.Single();
-                var downloadOptions = await downloader.GetDownloadOptionsAsync(video.Id);
+                var downloadOptions = await downloader.GetAudioDownloadOptionsAsync(video.Id);
 
                 var download = await _dialogManager.ShowDialogAsync(
                     _viewModelFactory.CreateDownloadSingleSetupViewModel(video, downloadOptions)

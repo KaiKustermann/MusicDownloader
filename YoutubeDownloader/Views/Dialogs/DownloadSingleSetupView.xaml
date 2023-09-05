@@ -94,7 +94,7 @@
                     materialDesign:ComboBoxAssist.ShowSelectedItem="True"
                     IsReadOnly="True"
                     ItemsSource="{Binding AvailableDownloadOptions}"
-                    SelectedItem="{Binding SelectedDownloadOption}">
+                    SelectedItem="{Binding SelectedDownloadOption}" SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
