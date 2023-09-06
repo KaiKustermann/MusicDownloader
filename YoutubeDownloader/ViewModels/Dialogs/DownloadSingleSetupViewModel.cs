@@ -69,8 +69,6 @@ public class DownloadSingleSetupViewModel : DialogScreen<DownloadViewModel>
         DirectoryEx.CreateDirectoryForFile(filePath);
         File.WriteAllBytes(filePath, Array.Empty<byte>());
 
-        _settingsService.LastContainer = container;
-
         Close(
             _viewModelFactory.CreateDownloadViewModel(Video!, SelectedDownloadOption!, filePath)
         );

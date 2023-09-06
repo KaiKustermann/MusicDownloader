@@ -103,7 +103,6 @@ public class DownloadMultipleSetupViewModel : DialogScreen<IReadOnlyList<Downloa
             );
         }
 
-        _settingsService.LastContainer = SelectedContainer;
         _settingsService.LastVideoQualityPreference = SelectedVideoQualityPreference;
 
         Close(downloads);
