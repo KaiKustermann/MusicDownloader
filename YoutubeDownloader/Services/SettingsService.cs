@@ -38,7 +38,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     // STJ cannot properly serialize immutable structs
     [JsonConverter(typeof(ContainerJsonConverter))]
-    public Container LastContainer { get; set; } = Container.Mp4;
+    public Container LastContainer { get; set; } = Container.Mp3;
 
     public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
 

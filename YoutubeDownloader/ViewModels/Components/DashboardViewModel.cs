@@ -238,6 +238,7 @@ public class DashboardViewModel : PropertyChangedBase, IDisposable
         {
             progress.ReportCompletion();
             IsBusy = false;
+            Query = null;
         }
     }
 
