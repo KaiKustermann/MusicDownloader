@@ -42,7 +42,7 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
 
     public VideoQualityPreference LastVideoQualityPreference { get; set; } = VideoQualityPreference.Highest;
 
-    public string? LastSavingDirectory { get; set; }
+    public string? LastSavingDirectory { get; set; } = null;
 
     public SettingsService()
         : base(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.dat"))
@@ -56,9 +56,14 @@ public partial class SettingsService : SettingsBase, INotifyPropertyChanged
         if (!IsAuthPersisted)
             LastAuthCookies = null;
 
+        // clear LastSavingDirectory
+        var lastSavingDirectory = LastSavingDirectory;
+        LastSavingDirectory = null;
+
         base.Save();
 
         LastAuthCookies = lastAuthCookies;
+        LastSavingDirectory = lastSavingDirectory;
     }
 }
 
